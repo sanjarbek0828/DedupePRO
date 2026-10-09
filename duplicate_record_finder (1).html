@@ -1,0 +1,2270 @@
+<!DOCTYPE html>
+<html lang="uz" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>DedupePro — Dublikat Yozuvlarni Qidirish va Tozalash Tizimi</title>
+  <style>
+    /* CSS Variables & Modern Design System */
+    :root {
+      --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+      /* Dark Theme (Default) */
+      --bg-app: #090d16;
+      --bg-surface: #111827;
+      --bg-surface-elevated: #162032;
+      --bg-card: #131c2e;
+      --bg-card-hover: #19253d;
+      --bg-input: #0b111e;
+      --bg-subtle: #1a253a;
+      
+      --border-subtle: #1e2c44;
+      --border-medium: #2a3c5d;
+      --border-strong: #3b82f6;
+
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-subtle: #64748b;
+      --text-inverted: #0f172a;
+
+      --accent-primary: #3b82f6;
+      --accent-primary-hover: #2563eb;
+      --accent-glow: rgba(59, 130, 246, 0.28);
+      --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+
+      --status-success: #10b981;
+      --status-success-bg: rgba(16, 185, 129, 0.12);
+      --status-success-border: rgba(16, 185, 129, 0.35);
+
+      --status-warning: #f59e0b;
+      --status-warning-bg: rgba(245, 158, 11, 0.12);
+      --status-warning-border: rgba(245, 158, 11, 0.35);
+
+      --status-danger: #ef4444;
+      --status-danger-bg: rgba(239, 68, 68, 0.14);
+      --status-danger-border: rgba(239, 68, 68, 0.35);
+
+      /* WCAG High Contrast Dark Mode Duplicate Group Colors */
+      --grp-0-bg: rgba(244, 63, 94, 0.15); --grp-0-text: #fda4af; --grp-0-border: #f43f5e; --grp-0-badge: #e11d48;
+      --grp-1-bg: rgba(245, 158, 11, 0.15); --grp-1-text: #fef08a; --grp-1-border: #f59e0b; --grp-1-badge: #d97706;
+      --grp-2-bg: rgba(99, 102, 241, 0.16); --grp-2-text: #c7d2fe; --grp-2-border: #6366f1; --grp-2-badge: #4f46e5;
+      --grp-3-bg: rgba(168, 85, 247, 0.16); --grp-3-text: #e9d5ff; --grp-3-border: #a855f7; --grp-3-badge: #9333ea;
+      --grp-4-bg: rgba(16, 185, 129, 0.16); --grp-4-text: #a7f3d0; --grp-4-border: #10b981; --grp-4-badge: #059669;
+      --grp-5-bg: rgba(236, 72, 153, 0.16); --grp-5-text: #fbcfe8; --grp-5-border: #ec4899; --grp-5-badge: #db2777;
+      --grp-6-bg: rgba(14, 165, 233, 0.16); --grp-6-text: #bae6fd; --grp-6-border: #0ea5e9; --grp-6-badge: #0284c7;
+      --grp-7-bg: rgba(249, 115, 22, 0.16); --grp-7-text: #fed7aa; --grp-7-border: #f97316; --grp-7-badge: #ea580c;
+
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.35);
+      --shadow-md: 0 4px 16px -2px rgba(0, 0, 0, 0.45);
+      --shadow-lg: 0 12px 32px -4px rgba(0, 0, 0, 0.65);
+
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 18px;
+      --radius-full: 9999px;
+      --transition-fast: 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    [data-theme="light"] {
+      --bg-app: #f8fafc;
+      --bg-surface: #ffffff;
+      --bg-surface-elevated: #ffffff;
+      --bg-card: #ffffff;
+      --bg-card-hover: #f8fafc;
+      --bg-input: #ffffff;
+      --bg-subtle: #f1f5f9;
+
+      --border-subtle: #e2e8f0;
+      --border-medium: #cbd5e1;
+      --border-strong: #2563eb;
+
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --text-subtle: #94a3b8;
+      --text-inverted: #ffffff;
+
+      --accent-primary: #2563eb;
+      --accent-primary-hover: #1d4ed8;
+      --accent-glow: rgba(37, 99, 235, 0.2);
+
+      --status-success: #059669;
+      --status-success-bg: #ecfdf5;
+      --status-success-border: #6ee7b7;
+
+      --status-warning: #d97706;
+      --status-warning-bg: #fffbeb;
+      --status-warning-border: #fde68a;
+
+      --status-danger: #dc2626;
+      --status-danger-bg: #fef2f2;
+      --status-danger-border: #fca5a5;
+
+      /* Light Mode Duplicate Groups */
+      --grp-0-bg: #fff1f2; --grp-0-text: #9f1239; --grp-0-border: #fb7185; --grp-0-badge: #e11d48;
+      --grp-1-bg: #fefce8; --grp-1-text: #854d0e; --grp-1-border: #facc15; --grp-1-badge: #ca8a04;
+      --grp-2-bg: #eef2ff; --grp-2-text: #3730a3; --grp-2-border: #818cf8; --grp-2-badge: #4f46e5;
+      --grp-3-bg: #f5f3ff; --grp-3-text: #581c87; --grp-3-border: #c084fc; --grp-3-badge: #7e22ce;
+      --grp-4-bg: #ecfdf5; --grp-4-text: #065f46; --grp-4-border: #4ade80; --grp-4-badge: #16a34a;
+      --grp-5-bg: #fdf2f8; --grp-5-text: #831843; --grp-5-border: #f472b6; --grp-5-badge: #db2777;
+      --grp-6-bg: #f0f9ff; --grp-6-text: #075985; --grp-6-border: #38bdf8; --grp-6-badge: #0284c7;
+      --grp-7-bg: #fff7ed; --grp-7-text: #9a3412; --grp-7-border: #fb923c; --grp-7-badge: #ea580c;
+
+      --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06);
+      --shadow-md: 0 4px 12px -2px rgba(15, 23, 42, 0.08);
+      --shadow-lg: 0 14px 28px -4px rgba(15, 23, 42, 0.12);
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: var(--font-family);
+      background-color: var(--bg-app);
+      color: var(--text-main);
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+
+    /* Ambient dynamic glow background */
+    .ambient-fx {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .ambient-sphere {
+      position: absolute;
+      width: 480px;
+      height: 480px;
+      border-radius: 50%;
+      filter: blur(140px);
+      opacity: 0.18;
+      pointer-events: none;
+    }
+    .sphere-1 { top: -140px; left: -100px; background: #3b82f6; }
+    .sphere-2 { top: 30%; right: -120px; background: #8b5cf6; }
+
+    .app-container {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 1360px;
+      margin: 0 auto;
+      padding: 1.25rem 1rem 3rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    @media (min-width: 768px) {
+      .app-container {
+        padding: 2rem 1.75rem 4rem;
+      }
+    }
+    .header-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      padding-bottom: 1.5rem;
+      margin-bottom: 1.75rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    @media (min-width: 768px) {
+      .header-nav {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+    }
+
+    .brand-cluster {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .brand-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: var(--radius-md);
+      background: var(--accent-gradient);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      box-shadow: 0 4px 18px var(--accent-glow);
+      flex-shrink: 0;
+    }
+
+    .brand-icon svg {
+      animation: gentlePulse 3.5s infinite ease-in-out;
+    }
+
+    @keyframes gentlePulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+    }
+
+    .brand-title {
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      line-height: 1.2;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .chip-badge {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 0.15rem 0.5rem;
+      border-radius: var(--radius-full);
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-medium);
+      color: var(--accent-primary);
+    }
+
+    .brand-subtitle {
+      font-size: 0.825rem;
+      color: var(--text-muted);
+      margin-top: 0.15rem;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.65rem 1.05rem;
+      min-height: 44px; /* mobile accessible touch target */
+      font-size: 0.875rem;
+      font-weight: 600;
+      font-family: inherit;
+      border-radius: var(--radius-sm);
+      border: 1px solid transparent;
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
+      transition: var(--transition-fast);
+      position: relative;
+    }
+
+    .btn:active {
+      transform: scale(0.975);
+    }
+
+    .btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      transform: none !important;
+      box-shadow: none !important;
+    }
+
+    .btn-secondary {
+      background: var(--bg-surface);
+      border-color: var(--border-medium);
+      color: var(--text-main);
+      box-shadow: var(--shadow-sm);
+    }
+    .btn-secondary:hover:not(:disabled) {
+      background: var(--bg-card-hover);
+      border-color: var(--border-strong);
+    }
+
+    .btn-primary {
+      background: var(--accent-gradient);
+      color: #ffffff;
+      box-shadow: 0 4px 14px var(--accent-glow);
+    }
+    .btn-primary:hover:not(:disabled) {
+      filter: brightness(1.08);
+      box-shadow: 0 6px 20px var(--accent-glow);
+      transform: translateY(-1px);
+    }
+
+    .btn-clean {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: #ffffff;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
+    }
+    .btn-clean:hover:not(:disabled) {
+      filter: brightness(1.1);
+      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5);
+      transform: translateY(-1px);
+    }
+
+    .btn-danger-soft {
+      background: var(--status-danger-bg);
+      border-color: var(--status-danger-border);
+      color: var(--status-danger);
+    }
+    .btn-danger-soft:hover:not(:disabled) {
+      background: rgba(239, 68, 68, 0.22);
+    }
+
+    .btn-icon-only {
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      border-radius: var(--radius-sm);
+    }
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.85rem;
+      margin-bottom: 1.75rem;
+    }
+
+    @media (min-width: 900px) {
+      .metrics-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.1rem;
+      }
+    }
+
+    .metric-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 1.15rem 1.25rem;
+      box-shadow: var(--shadow-sm);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: var(--transition-fast);
+    }
+
+    .metric-card:hover {
+      border-color: var(--border-medium);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .metric-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+    }
+    .card-total::before { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
+    .card-unique::before { background: linear-gradient(90deg, #10b981, #34d399); }
+    .card-groups::before { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+    .card-prune::before { background: linear-gradient(90deg, #ef4444, #f87171); }
+
+    .metric-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.65rem;
+    }
+
+    .metric-title {
+      font-size: 0.76rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+    }
+
+    .metric-icon-wrap {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-subtle);
+      color: var(--text-muted);
+    }
+
+    .metric-value {
+      font-size: 1.85rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--text-main);
+      font-variant-numeric: tabular-nums;
+      line-height: 1.1;
+    }
+
+    @media (min-width: 768px) {
+      .metric-value {
+        font-size: 2.25rem;
+      }
+    }
+
+    .metric-sub {
+      font-size: 0.75rem;
+      color: var(--text-subtle);
+      margin-top: 0.35rem;
+    }
+    .input-workspace {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+
+    @media (min-width: 960px) {
+      .input-workspace {
+        grid-template-columns: 1fr 1.35fr;
+      }
+    }
+
+    /* Mobile segmented tab for input switching */
+    .mobile-input-switch {
+      display: flex;
+      background: var(--bg-subtle);
+      padding: 4px;
+      border-radius: var(--radius-sm);
+      margin-bottom: 1rem;
+      border: 1px solid var(--border-subtle);
+    }
+    @media (min-width: 960px) {
+      .mobile-input-switch {
+        display: none;
+      }
+    }
+
+    .mobile-switch-tab {
+      flex: 1;
+      padding: 0.65rem 0.5rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      border-radius: 6px;
+      cursor: pointer;
+      text-align: center;
+      transition: var(--transition-fast);
+    }
+    .mobile-switch-tab.active {
+      background: var(--bg-card);
+      color: var(--text-main);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .panel-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    @media (min-width: 768px) {
+      .panel-card {
+        padding: 1.5rem;
+      }
+    }
+
+    .panel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.15rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .panel-headline {
+      font-size: 1.05rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+    }
+
+    .form-field {
+      margin-bottom: 1rem;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.825rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 0.4rem;
+    }
+
+    .form-input {
+      width: 100%;
+      min-height: 44px;
+      padding: 0.65rem 0.9rem;
+      font-size: 0.925rem;
+      font-family: inherit;
+      color: var(--text-main);
+      background: var(--bg-input);
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-sm);
+      transition: var(--transition-fast);
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    .form-input.is-error {
+      border-color: var(--status-danger);
+      background: var(--status-danger-bg);
+    }
+
+    .field-error-hint {
+      display: none;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.77rem;
+      font-weight: 600;
+      color: var(--status-danger);
+      margin-top: 0.35rem;
+    }
+    .field-error-hint.show {
+      display: flex;
+      animation: fadeInFast 0.18s ease;
+    }
+
+    .textarea-box {
+      min-height: 130px;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      line-height: 1.5;
+      resize: vertical;
+    }
+
+    .helper-notes {
+      font-size: 0.75rem;
+      color: var(--text-subtle);
+      margin-top: 0.45rem;
+      line-height: 1.45;
+    }
+
+    .code-pill {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-subtle);
+      padding: 0.1rem 0.4rem;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+    }
+
+    /* Malformed Line Validation Alert Box */
+    .validation-alert-box {
+      margin-top: 0.9rem;
+      padding: 0.85rem 1rem;
+      background: var(--status-danger-bg);
+      border: 1px solid var(--status-danger-border);
+      border-radius: var(--radius-sm);
+      color: var(--status-danger);
+      font-size: 0.815rem;
+      display: none;
+    }
+    .validation-alert-box.active {
+      display: block;
+      animation: fadeInFast 0.2s ease;
+    }
+
+    .validation-alert-title {
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .validation-error-list {
+      list-style-type: disc;
+      padding-left: 1.35rem;
+      max-height: 110px;
+      overflow-y: auto;
+      font-family: var(--font-mono);
+      font-size: 0.76rem;
+    }
+    .validation-error-list li {
+      margin-bottom: 0.25rem;
+    }
+    .table-container-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .table-toolbar {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+    }
+
+    @media (min-width: 900px) {
+      .table-toolbar {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+    }
+
+    .filter-tabs-wrapper {
+      display: flex;
+      background: var(--bg-subtle);
+      padding: 4px;
+      border-radius: var(--radius-sm);
+      gap: 2px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .filter-tab-btn {
+      padding: 0.45rem 0.85rem;
+      font-size: 0.815rem;
+      font-weight: 600;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      border-radius: 6px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      white-space: nowrap;
+      transition: var(--transition-fast);
+    }
+    .filter-tab-btn.active {
+      background: var(--bg-card);
+      color: var(--text-main);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .badge-counter {
+      font-size: 0.7rem;
+      padding: 0.1rem 0.45rem;
+      border-radius: var(--radius-full);
+      background: var(--border-subtle);
+      color: var(--text-muted);
+      font-weight: 700;
+    }
+    .filter-tab-btn.active .badge-counter {
+      background: var(--accent-glow);
+      color: var(--accent-primary);
+    }
+
+    .toolbar-right {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      flex-wrap: wrap;
+    }
+
+    .search-input-shell {
+      position: relative;
+      flex: 1;
+      min-width: 190px;
+    }
+
+    .search-input-shell input {
+      padding-left: 2.25rem;
+      padding-right: 2rem;
+      min-height: 40px;
+    }
+
+    .search-icon-svg {
+      position: absolute;
+      left: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-subtle);
+      pointer-events: none;
+    }
+
+    .search-clear-btn {
+      position: absolute;
+      right: 0.65rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--text-subtle);
+      cursor: pointer;
+      padding: 4px;
+      display: none;
+    }
+    .search-clear-btn.active {
+      display: block;
+    }
+
+    /* Status clarification bar */
+    .status-guide-bar {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      padding: 0.65rem 1.25rem;
+      background: var(--bg-subtle);
+      border-bottom: 1px solid var(--border-subtle);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      flex-wrap: wrap;
+    }
+
+    .guide-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    /* Table styles with smooth horizontal scroll */
+    .table-scroll-area {
+      width: 100%;
+      overflow-x: auto;
+      max-height: 520px;
+      position: relative;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.885rem;
+      min-width: 680px; /* guarantees readability on mobile scroll */
+    }
+
+    thead th {
+      background: var(--bg-subtle);
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0.85rem 1.15rem;
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      border-bottom: 1px solid var(--border-subtle);
+      white-space: nowrap;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid var(--border-subtle);
+      transition: background-color 0.15s ease;
+    }
+
+    tbody tr:hover {
+      background-color: rgba(59, 130, 246, 0.04);
+    }
+
+    td {
+      padding: 0.85rem 1.15rem;
+      vertical-align: middle;
+    }
+
+    /* 8 Duplicate Group Accessible Backgrounds & Indicator Strips */
+    .tr-group { border-left: 4.5px solid transparent; }
+    .tr-group-0 { background: var(--grp-0-bg); border-left-color: var(--grp-0-border); }
+    .tr-group-1 { background: var(--grp-1-bg); border-left-color: var(--grp-1-border); }
+    .tr-group-2 { background: var(--grp-2-bg); border-left-color: var(--grp-2-border); }
+    .tr-group-3 { background: var(--grp-3-bg); border-left-color: var(--grp-3-border); }
+    .tr-group-4 { background: var(--grp-4-bg); border-left-color: var(--grp-4-border); }
+    .tr-group-5 { background: var(--grp-5-bg); border-left-color: var(--grp-5-border); }
+    .tr-group-6 { background: var(--grp-6-bg); border-left-color: var(--grp-6-border); }
+    .tr-group-7 { background: var(--grp-7-bg); border-left-color: var(--grp-7-border); }
+
+    .tag-cluster-0 { background: var(--grp-0-bg); color: var(--grp-0-text); border: 1px solid var(--grp-0-border); }
+    .tag-cluster-1 { background: var(--grp-1-bg); color: var(--grp-1-text); border: 1px solid var(--grp-1-border); }
+    .tag-cluster-2 { background: var(--grp-2-bg); color: var(--grp-2-text); border: 1px solid var(--grp-2-border); }
+    .tag-cluster-3 { background: var(--grp-3-bg); color: var(--grp-3-text); border: 1px solid var(--grp-3-border); }
+    .tag-cluster-4 { background: var(--grp-4-bg); color: var(--grp-4-text); border: 1px solid var(--grp-4-border); }
+    .tag-cluster-5 { background: var(--grp-5-bg); color: var(--grp-5-text); border: 1px solid var(--grp-5-border); }
+    .tag-cluster-6 { background: var(--grp-6-bg); color: var(--grp-6-text); border: 1px solid var(--grp-6-border); }
+    .tag-cluster-7 { background: var(--grp-7-bg); color: var(--grp-7-text); border: 1px solid var(--grp-7-border); }
+
+    .code-badge-pill {
+      font-family: var(--font-mono);
+      font-weight: 600;
+      font-size: 0.815rem;
+      padding: 0.2rem 0.55rem;
+      border-radius: var(--radius-sm);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.28rem 0.65rem;
+      border-radius: var(--radius-full);
+      font-size: 0.77rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .status-badge-first {
+      background: var(--status-success-bg);
+      color: var(--status-success);
+      border: 1px solid var(--status-success-border);
+    }
+
+    .status-badge-dupe {
+      background: var(--status-danger-bg);
+      color: var(--status-danger);
+      border: 1px solid var(--status-danger-border);
+    }
+
+    .status-badge-unique {
+      background: var(--bg-subtle);
+      color: var(--text-muted);
+      border: 1px solid var(--border-medium);
+    }
+
+    .row-del-btn {
+      background: none;
+      border: none;
+      color: var(--text-subtle);
+      padding: 0.4rem;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition-fast);
+    }
+    .row-del-btn:hover {
+      background: var(--status-danger-bg);
+      color: var(--status-danger);
+    }
+
+    .empty-state-card {
+      padding: 4.5rem 1.5rem;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .empty-circle-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: var(--bg-subtle);
+      color: var(--text-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.15rem;
+    }
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(3, 7, 18, 0.72);
+      backdrop-filter: blur(5px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.2s ease, visibility 0.2s ease;
+    }
+    .modal-backdrop.is-open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-dialog {
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      width: 100%;
+      max-width: 480px;
+      overflow: hidden;
+      transform: scale(0.95) translateY(12px);
+      transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .modal-backdrop.is-open .modal-dialog {
+      transform: scale(1) translateY(0);
+    }
+
+    .modal-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .modal-icon-badge {
+      width: 42px;
+      height: 42px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .modal-body {
+      padding: 1.5rem;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.55;
+    }
+
+    .modal-metrics-summary {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 0.9rem 1.15rem;
+      margin: 1.15rem 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .modal-metrics-num {
+      font-size: 1.6rem;
+      font-weight: 800;
+      display: block;
+      line-height: 1.1;
+      margin-top: 0.2rem;
+    }
+
+    .affected-codes-scroll {
+      max-height: 90px;
+      overflow-y: auto;
+      background: var(--bg-input);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 0.5rem 0.75rem;
+      margin-top: 0.75rem;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+
+    .modal-footer {
+      padding: 1rem 1.5rem;
+      background: var(--bg-subtle);
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+    }
+
+    /* Toast deck and animated undo snackbars */
+    .toast-deck {
+      position: fixed;
+      bottom: 1.25rem;
+      right: 1.25rem;
+      left: 1.25rem;
+      z-index: 2000;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      pointer-events: none;
+    }
+
+    @media (min-width: 600px) {
+      .toast-deck {
+        left: auto;
+        max-width: 420px;
+      }
+    }
+
+    .toast-card {
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-medium);
+      color: var(--text-main);
+      box-shadow: var(--shadow-lg);
+      padding: 0.85rem 1.15rem;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      font-size: 0.875rem;
+      pointer-events: auto;
+      transform: translateY(20px);
+      opacity: 0;
+      transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
+    }
+    .toast-card.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .toast-progress-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 3px;
+      background: var(--accent-primary);
+      width: 100%;
+      transform-origin: left;
+      animation: toastProgress 6s linear forwards;
+    }
+
+    @keyframes toastProgress {
+      from { transform: scaleX(1); }
+      to { transform: scaleX(0); }
+    }
+
+    .toast-undo-btn {
+      margin-left: auto;
+      padding: 0.35rem 0.75rem;
+      font-size: 0.8rem;
+      font-weight: 700;
+      background: var(--accent-primary);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    #confettiCanvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1500;
+    }
+
+    @keyframes fadeInFast {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="ambient-fx" aria-hidden="true">
+    <div class="ambient-sphere sphere-1"></div>
+    <div class="ambient-sphere sphere-2"></div>
+  </div>
+
+  <canvas id="confettiCanvas"></canvas>
+
+  <div class="app-container">
+    <header class="header-nav">
+      <div class="brand-cluster">
+        <div class="brand-icon" aria-hidden="true">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+            <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+            <path d="m9 14 2 2 4-4"></path>
+          </svg>
+        </div>
+        <div>
+          <h1 class="brand-title">
+            DedupePro <span class="chip-badge">O(N) Engine</span>
+          </h1>
+          <p class="brand-subtitle">Dublikat yozuvlarni aniq solishtirish, ajratish va xavfsiz tozalash vositasi</p>
+        </div>
+      </div>
+
+      <div class="nav-actions">
+        <button id="themeToggleBtn" class="btn btn-secondary btn-icon-only" title="Mavzuni o'zgartirish (Yorug' / Qorong'i)" aria-label="Mavzuni almashtirish">
+          <svg id="sunIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          <svg id="moonIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+
+        <button id="loadSampleBtn" class="btn btn-secondary" title="Laboratoriya namunalari bilan to'ldirish">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          Namunaviy Ma'lumotlar
+        </button>
+
+        <button id="clearAllBtn" class="btn btn-danger-soft" title="Jadvaldagi barcha yozuvlarni tozalash">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="3 6 5 6 21 6"></polyline>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+          </svg>
+          Hammasini Tozalash
+        </button>
+      </div>
+    </header>
+
+    <section class="metrics-grid" aria-label="Statistika Ko'rsatkichlari">
+      <div class="metric-card card-total">
+        <div class="metric-top">
+          <span class="metric-title">Jami Yozuvlar</span>
+          <div class="metric-icon-wrap">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+          </div>
+        </div>
+        <div class="metric-value" id="statTotalCount">0</div>
+        <div class="metric-sub">Kiritilgan barcha namunalar soni</div>
+      </div>
+
+      <div class="metric-card card-unique">
+        <div class="metric-top">
+          <span class="metric-title">Noyob Kodlar</span>
+          <div class="metric-icon-wrap">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+          </div>
+        </div>
+        <div class="metric-value" id="statUniqueCount">0</div>
+        <div class="metric-sub">Takrorlanmas alohida kodlar</div>
+      </div>
+
+      <div class="metric-card card-groups">
+        <div class="metric-top">
+          <span class="metric-title">Dublikat Guruhlar</span>
+          <div class="metric-icon-wrap">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          </div>
+        </div>
+        <div class="metric-value" id="statGroupsCount">0</div>
+        <div class="metric-sub">2 yoki undan ortiq yozuvli kodlar</div>
+      </div>
+
+      <div class="metric-card card-prune">
+        <div class="metric-top">
+          <span class="metric-title">O'chiriladigan Nusxalar</span>
+          <div class="metric-icon-wrap">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+          </div>
+        </div>
+        <div class="metric-value" id="statPruneCount">0</div>
+        <div class="metric-sub">Tozalashda olib tashlanuvchi nusxalar</div>
+      </div>
+    </section>
+
+    <!-- Mobile Segmented Selector -->
+    <div class="mobile-input-switch" role="tablist">
+      <button class="mobile-switch-tab active" id="tabSwitchSingle" role="tab" aria-selected="true">Yakka Yozuv Qo'shish</button>
+      <button class="mobile-switch-tab" id="tabSwitchBulk" role="tab" aria-selected="false">Ommaviy Matn Importi</button>
+    </div>
+
+    <section class="input-workspace">
+      <!-- Input Panel 1: Single Record Entry Form -->
+      <div class="panel-card" id="panelSingleRecord">
+        <div class="panel-head">
+          <h2 class="panel-headline">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Yakka Yozuv Qo'shish
+          </h2>
+          <span class="chip-badge">Oddiy Kiritish</span>
+        </div>
+
+        <form id="singleForm" novalidate>
+          <div class="form-field">
+            <label class="form-label" for="inputName">Namuna / Yozuv Nomi</label>
+            <input type="text" id="inputName" class="form-input" placeholder="Masalan: COVID-19 PCR Testi" autocomplete="off">
+            <div id="errorName" class="field-error-hint">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+              Nom maydoni bo'sh bo'lishi mumkin emas.
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label class="form-label" for="inputCode">Aniq Kod (Katta/Kichik Harf Farqlanadi)</label>
+            <input type="text" id="inputCode" class="form-input" placeholder="Masalan: VIR-COV19-892" autocomplete="off">
+            <div id="errorCode" class="field-error-hint">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+              Kod maydoni bo'sh bo'lishi mumkin emas.
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 0.25rem;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Yozuvni Saqlash
+          </button>
+        </form>
+      </div>
+
+      <!-- Input Panel 2: Bulk Delimited Textarea Import -->
+      <div class="panel-card" id="panelBulkRecord">
+        <div class="panel-head">
+          <h2 class="panel-headline">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><line x1="9" y1="15" x2="15" y2="15"></line></svg>
+            Ommaviy Matn Importi
+          </h2>
+          <span style="font-size: 0.75rem; color: var(--text-subtle);">Har bir qatorda 1 ta yozuv</span>
+        </div>
+
+        <div class="form-field" style="margin-bottom: 0.4rem; flex: 1;">
+          <textarea id="bulkTextarea" class="form-input textarea-box" placeholder="Qon Plazmasi Zardobi, CHM-BLD-01&#10;COVID-19 Antigen Testi; VIR-COV19-892&#10;Genomik DNK Zanjiri&#9;GEN-DNA-405"></textarea>
+          <div class="helper-notes">
+            Qabul qilinuvchi ajratkichlar: vergul <span class="code-pill">,</span> nuqtali vergul <span class="code-pill">;</span> yoki tab <span class="code-pill">\t</span>. Qator atrofidagi ortiqcha bo'shliqlar avtomatik qisqartiriladi.
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 0.65rem; margin-top: 0.5rem; flex-wrap: wrap;">
+          <button id="bulkImportBtn" class="btn btn-primary" style="flex: 1; min-width: 150px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+            Tahlil Qilish & Import
+          </button>
+          <button id="bulkClearBtn" class="btn btn-secondary">Tozalash</button>
+        </div>
+
+        <!-- Inline Line-by-Line Error Feedback Box -->
+        <div id="bulkValidationAlert" class="validation-alert-box">
+          <div class="validation-alert-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+            <span id="bulkAlertTitle">Xatolik aniqlangan qatorlar:</span>
+          </div>
+          <ul id="bulkAlertList" class="validation-error-list"></ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="table-container-card">
+      <div class="table-toolbar">
+        <div style="display: flex; gap: 0.85rem; align-items: center; flex-wrap: wrap; flex: 1;">
+          <div class="filter-tabs-wrapper" role="tablist">
+            <button class="filter-tab-btn active" data-filter="all" role="tab" aria-selected="true">
+              Barchasi <span class="badge-counter" id="tabCountAll">0</span>
+            </button>
+            <button class="filter-tab-btn" data-filter="duplicates" role="tab" aria-selected="false">
+              Faqat Dublikatlar <span class="badge-counter" id="tabCountDupe">0</span>
+            </button>
+            <button class="filter-tab-btn" data-filter="unique" role="tab" aria-selected="false">
+              Faqat Unikallar <span class="badge-counter" id="tabCountUnique">0</span>
+            </button>
+          </div>
+
+          <div class="search-input-shell">
+            <svg class="search-icon-svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" id="filterSearchInput" class="form-input" placeholder="Nom yoki kod bo'yicha qidiruv..." autocomplete="off">
+            <button id="searchClearBtn" class="search-clear-btn" title="Qidiruvni tozalash" aria-label="Qidiruvni tozalash">✕</button>
+          </div>
+        </div>
+
+        <div class="toolbar-right">
+          <button id="exportCsvBtn" class="btn btn-secondary" title="Excel / CSV fayl ko'rinishida saqlash">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            CSV Export
+          </button>
+          <button id="copyClipboardBtn" class="btn btn-secondary" title="Jadvalni clipboardga nusxalash">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            Nusxa Olish
+          </button>
+          <button id="cleanDuplicatesBtn" class="btn btn-clean" title="Dublikatlarni tozalab faqat 1-asl nusxani qoldirish">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M3 6h18"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path><path d="m9 11 2 2 4-4"></path></svg>
+            Tozalash (<span id="cleanCounterSpan">0</span>)
+          </button>
+        </div>
+      </div>
+
+      <!-- Color and Status Badge Legend Guide -->
+      <div class="status-guide-bar">
+        <span style="font-weight: 700; color: var(--text-main);">Belgilar izohi:</span>
+        <div class="guide-item">
+          <span class="status-badge status-badge-first" style="font-size: 0.72rem; padding: 2px 7px;">★ Asl nusxa (1-chi)</span>
+          <span>Eng birinchi kiritilgan nusxa (tozalashda saqlanadi)</span>
+        </div>
+        <div class="guide-item">
+          <span class="status-badge status-badge-dupe" style="font-size: 0.72rem; padding: 2px 7px;">⚠ Dublikat (×N)</span>
+          <span>Keyingi ortiqcha nusxalar (tozalashda o'chiriladi)</span>
+        </div>
+        <div class="guide-item">
+          <span class="status-badge status-badge-unique" style="font-size: 0.72rem; padding: 2px 7px;">✓ Unikal</span>
+          <span>Faqat bitta marta uchragan kod</span>
+        </div>
+      </div>
+
+      <div class="table-scroll-area">
+        <table id="mainTable">
+          <thead>
+            <tr>
+              <th style="width: 55px;">#</th>
+              <th>Namuna Nomi</th>
+              <th>Aniq Kod (Key)</th>
+              <th>Holat / Status</th>
+              <th>Dublikat Klasteri</th>
+              <th style="width: 60px; text-align: center;">Amal</th>
+            </tr>
+          </thead>
+          <tbody id="recordsTbody"></tbody>
+        </table>
+
+        <div id="tableEmptyState" class="empty-state-card" style="display: none;">
+          <div class="empty-circle-icon">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+          </div>
+          <h3 id="emptyStateHeadline" style="font-size: 1.15rem; font-weight: 700; margin-bottom: 0.35rem;">Yozuvlar topilmadi</h3>
+          <p id="emptyStateDetail" style="font-size: 0.86rem; color: var(--text-muted); max-width: 440px; margin-bottom: 1.25rem;">
+            Tizimga yangi yozuv kiriting, ommaviy matn yuklang yoki tayyor laboratoriya namunalarini oching.
+          </p>
+          <button id="emptyStateSampleBtn" class="btn btn-primary">Namunaviy Ma'lumotlarni Yuklash</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Custom Modal: Clean Confirmation -->
+    <div id="cleanModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="cleanModalTitle">
+      <div class="modal-dialog">
+        <div class="modal-header">
+          <div class="modal-icon-badge" style="background: var(--status-warning-bg); color: var(--status-warning);">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+          </div>
+          <div>
+            <h3 id="cleanModalTitle" style="font-size: 1.1rem; font-weight: 700; color: var(--text-main);">Dublikatlarni Tozalashni Tasdiqlaysizmi?</h3>
+          </div>
+        </div>
+        <div class="modal-body">
+          <p>Har bir dublikat guruhidan faqat eng birinchi kiritilgan yozuv (<strong>1-asl nusxa</strong>) saqlanadi, qolgan barcha takrorlangan nusxalar olib tashlanadi. Boshlang'ich ketma-ketlik buzilmaydi.</p>
+          
+          <div class="modal-metrics-summary">
+            <div>
+              <span style="font-size: 0.74rem; color: var(--text-subtle);">O'chiriladigan Nusxalar</span>
+              <span id="modalPruneCount" class="modal-metrics-num" style="color: var(--status-danger);">0</span>
+            </div>
+            <div>
+              <span style="font-size: 0.74rem; color: var(--text-subtle);">Saqlanadigan Yozuvlar</span>
+              <span id="modalRetainCount" class="modal-metrics-num" style="color: var(--status-success);">0</span>
+            </div>
+          </div>
+
+          <div style="font-size: 0.78rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.25rem;">Tozalanayotgan takroriy kodlar ro'yxati:</div>
+          <div id="modalAffectedCodes" class="affected-codes-scroll"></div>
+
+          <p style="font-size: 0.78rem; color: var(--text-subtle); margin-top: 0.85rem;">Xavotir olmang, tozalashdan so'ng darhol "Bekor qilish" (Undo) tugmasi orqali qaytarishingiz mumkin.</p>
+        </div>
+        <div class="modal-footer">
+          <button id="cancelCleanBtn" class="btn btn-secondary">Bekor Qilish</button>
+          <button id="confirmCleanBtn" class="btn btn-clean">Ha, Tozalansin</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Custom Modal: Clear All Confirmation -->
+    <div id="clearModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="clearModalTitle">
+      <div class="modal-dialog">
+        <div class="modal-header">
+          <div class="modal-icon-badge" style="background: var(--status-danger-bg); color: var(--status-danger);">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+          </div>
+          <div>
+            <h3 id="clearModalTitle" style="font-size: 1.1rem; font-weight: 700; color: var(--text-main);">Barcha Yozuvlarni O'chirish?</h3>
+          </div>
+        </div>
+        <div class="modal-body">
+          <p>Haqiqatan ham jadvaldagi barcha <strong id="modalClearCount">0</strong> ta yozuvni butunlay tozalab tashlamoqchimisiz?</p>
+        </div>
+        <div class="modal-footer">
+          <button id="cancelClearBtn" class="btn btn-secondary">Bekor Qilish</button>
+          <button id="confirmClearBtn" class="btn btn-danger-soft" style="background: var(--status-danger); color: white;">Ha, Tozalandi</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notification Toast Deck -->
+    <div id="toastDeck" class="toast-deck" aria-live="polite"></div>
+
+    <footer style="margin-top: 3rem; text-align: center; font-size: 0.78rem; color: var(--text-subtle); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; border-top: 1px solid var(--border-subtle); padding-top: 1rem;">
+      <span>DedupePro • Vazifa 21, Chipta 045 • Toza Client-Side Arxitektura</span>
+      <span>Katta va Kichik Harflarga Sezgir $O(N)$ Hash Map Tizimi</span>
+    </footer>
+  </div>
+
+  <script>
+    /* Application In-Memory State */
+    let recordsData = [];
+    let undoHistory = [];
+    let currentFilter = 'all';
+    let searchQuery = '';
+
+    const animatedCounters = {
+      total: 0,
+      unique: 0,
+      groups: 0,
+      prune: 0
+    };
+
+    /* Realistic Laboratory Inventory Sample Dataset with intentional duplicates */
+    const LABORATORY_SAMPLES = [
+      { name: "Qon Zardobi Namuna #1029", code: "BLD-SER-401" },
+      { name: "COVID-19 RT-PCR Biomaterial", code: "VIR-COV19-892" },
+      { name: "COVID-19 Tezkor Ekspress-Test", code: "VIR-COV19-892" },
+      { name: "COVID-19 Molekulyar Nazorat Testi", code: "VIR-COV19-892" },
+      { name: "Qon Zardobi Kaliy Tahlili", code: "CHM-ELY-301" },
+      { name: "Qon Zardobi Natriy Tahlili", code: "CHM-ELY-301" },
+      { name: "Genomik DNK Sekvenlash Panel 1", code: "GEN-DNA-405" },
+      { name: "Genomik DNK Zanjiri Sekvens V2", code: "GEN-DNA-405" },
+      { name: "Gistopatologik Biopsiya Namunasi", code: "HST-BX-554" },
+      { name: "Gistologiya Takroriy Namunasi", code: "HST-BX-554" },
+      { name: "Klinik Qon Umumiy Tahlili", code: "HEM-CBC-110" },
+      { name: "Toksikologik Siydik Skriningi", code: "TOX-URN-912" },
+      { name: "Plazma Gemoglobin Fluorometriyasi", code: "CHM-PLZ-889" },
+      { name: "Standart Albumin Nazorat Reagenti", code: "CHM-ALB-004" }
+    ];
+
+    /**
+     * Requirement 2: Pure Standalone Function for Detecting Identical Codes
+     * DOM-independent, strict character-for-character case-sensitive matching,
+     * linear O(N) complexity using JavaScript Map.
+     *
+     * @param {Array<{id: string, name: string, code: string}>} records
+     * @returns {Object} Analytical metadata, cluster mappings, and enriched records
+     */
+    function detectDuplicates(records) {
+      if (!Array.isArray(records)) {
+        return {
+          records: [],
+          totalCount: 0,
+          uniqueCodesCount: 0,
+          duplicateGroupCount: 0,
+          redundantCount: 0,
+          duplicateCodesList: []
+        };
+      }
+
+      const codeOccurrencesMap = new Map();
+      for (let i = 0; i < records.length; i++) {
+        const item = records[i];
+        const codeKey = String(item.code);
+        if (!codeOccurrencesMap.has(codeKey)) {
+          codeOccurrencesMap.set(codeKey, []);
+        }
+        codeOccurrencesMap.get(codeKey).push(i);
+      }
+
+      let duplicateGroupCount = 0;
+      let redundantCount = 0;
+      let groupSeq = 0;
+      const groupInfoMap = new Map();
+      const duplicateCodesList = [];
+
+      for (const [codeKey, indices] of codeOccurrencesMap.entries()) {
+        const size = indices.length;
+        if (size > 1) {
+          duplicateGroupCount++;
+          redundantCount += (size - 1);
+          duplicateCodesList.push({ code: codeKey, count: size });
+          groupInfoMap.set(codeKey, {
+            groupId: groupSeq,
+            colorIndex: groupSeq % 8,
+            groupSize: size
+          });
+          groupSeq++;
+        }
+      }
+
+      const enrichedRecords = records.map((item, index) => {
+        const codeKey = String(item.code);
+        const indices = codeOccurrencesMap.get(codeKey);
+        const groupSize = indices.length;
+        const isDuplicate = groupSize > 1;
+        const isFirstInstance = indices[0] === index;
+        const groupInfo = groupInfoMap.get(codeKey);
+
+        return {
+          id: item.id || `rec_${index}_${Date.now()}`,
+          name: item.name,
+          code: item.code,
+          index: index + 1,
+          isDuplicate: isDuplicate,
+          isUnique: !isDuplicate,
+          isFirstCopy: isDuplicate && isFirstInstance,
+          isSubsequentCopy: isDuplicate && !isFirstInstance,
+          groupSize: groupSize,
+          groupId: groupInfo ? groupInfo.groupId : null,
+          colorIndex: groupInfo ? groupInfo.colorIndex : null
+        };
+      });
+
+      return {
+        records: enrichedRecords,
+        totalCount: records.length,
+        uniqueCodesCount: codeOccurrencesMap.size,
+        duplicateGroupCount: duplicateGroupCount,
+        redundantCount: redundantCount,
+        duplicateCodesList: duplicateCodesList
+      };
+    }
+
+    function animateMetric(elemId, start, end, duration = 320) {
+      const el = document.getElementById(elemId);
+      if (!el) return;
+      if (start === end) {
+        el.textContent = end.toLocaleString();
+        return;
+      }
+      const startTime = performance.now();
+      function step(now) {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const ease = 1 - Math.pow(1 - progress, 3); // cubic ease-out
+        const val = Math.round(start + (end - start) * ease);
+        el.textContent = val.toLocaleString();
+        if (progress < 1) {
+          requestAnimationFrame(step);
+        } else {
+          el.textContent = end.toLocaleString();
+        }
+      }
+      requestAnimationFrame(step);
+    }
+
+    /* Update Dashboard Metrics and Buttons */
+    function syncMetrics(analysis) {
+      animateMetric('statTotalCount', animatedCounters.total, analysis.totalCount);
+      animateMetric('statUniqueCount', animatedCounters.unique, analysis.uniqueCodesCount);
+      animateMetric('statGroupsCount', animatedCounters.groups, analysis.duplicateGroupCount);
+      animateMetric('statPruneCount', animatedCounters.prune, analysis.redundantCount);
+
+      animatedCounters.total = analysis.totalCount;
+      animatedCounters.unique = analysis.uniqueCodesCount;
+      animatedCounters.groups = analysis.duplicateGroupCount;
+      animatedCounters.prune = analysis.redundantCount;
+
+      const dupeRows = analysis.records.filter(r => r.isDuplicate).length;
+      const uniqueRows = analysis.records.filter(r => r.isUnique).length;
+      document.getElementById('tabCountAll').textContent = analysis.totalCount;
+      document.getElementById('tabCountDupe').textContent = dupeRows;
+      document.getElementById('tabCountUnique').textContent = uniqueRows;
+
+      const cleanBtn = document.getElementById('cleanDuplicatesBtn');
+      document.getElementById('cleanCounterSpan').textContent = analysis.redundantCount;
+      cleanBtn.disabled = analysis.redundantCount === 0;
+
+      document.getElementById('clearAllBtn').disabled = analysis.totalCount === 0;
+      document.getElementById('exportCsvBtn').disabled = analysis.totalCount === 0;
+      document.getElementById('copyClipboardBtn').disabled = analysis.totalCount === 0;
+    }
+
+    function renderTable() {
+      const analysis = detectDuplicates(recordsData);
+      syncMetrics(analysis);
+
+      const tbody = document.getElementById('recordsTbody');
+      const emptyState = document.getElementById('tableEmptyState');
+      const emptyHeadline = document.getElementById('emptyStateHeadline');
+      const emptyDetail = document.getElementById('emptyStateDetail');
+      const sampleBtn = document.getElementById('emptyStateSampleBtn');
+
+      tbody.innerHTML = '';
+
+      if (analysis.totalCount === 0) {
+        tbody.style.display = 'none';
+        emptyState.style.display = 'flex';
+        emptyHeadline.textContent = "Hozircha yozuvlar mavjud emas";
+        emptyDetail.textContent = "Yuqoridagi formadan yozuv qo'shing yoki tayyor laboratoriya namunalarini yuklang.";
+        sampleBtn.style.display = 'inline-flex';
+        return;
+      }
+
+      const q = searchQuery.trim().toLowerCase();
+      const filtered = analysis.records.filter(r => {
+        if (currentFilter === 'duplicates' && !r.isDuplicate) return false;
+        if (currentFilter === 'unique' && !r.isUnique) return false;
+        if (q) {
+          const mName = r.name.toLowerCase().includes(q);
+          const mCode = r.code.toLowerCase().includes(q);
+          if (!mName && !mCode) return false;
+        }
+        return true;
+      });
+
+      if (filtered.length === 0) {
+        tbody.style.display = 'none';
+        emptyState.style.display = 'flex';
+        emptyHeadline.textContent = "Filtr bo'yicha yozuv topilmadi";
+        emptyDetail.textContent = `Tanlangan filtr ("${currentFilter}") va qidiruv kaliti bo'yicha hech qanday ma'lumot topilmadi.`;
+        sampleBtn.style.display = 'none';
+        return;
+      }
+
+      tbody.style.display = '';
+      emptyState.style.display = 'none';
+
+      const frag = document.createDocumentFragment();
+
+      filtered.forEach(item => {
+        const tr = document.createElement('tr');
+        if (item.isDuplicate && item.colorIndex !== null) {
+          tr.classList.add('tr-group', `tr-group-${item.colorIndex}`);
+        }
+
+        // # Index
+        const tdIdx = document.createElement('td');
+        tdIdx.style.color = 'var(--text-subtle)';
+        tdIdx.style.fontFamily = 'var(--font-mono)';
+        tdIdx.style.fontSize = '0.78rem';
+        tdIdx.textContent = item.index;
+        tr.appendChild(tdIdx);
+
+        // Name
+        const tdName = document.createElement('td');
+        tdName.style.fontWeight = '600';
+        tdName.textContent = item.name;
+        tr.appendChild(tdName);
+
+        // Code
+        const tdCode = document.createElement('td');
+        const codeChip = document.createElement('span');
+        codeChip.className = 'code-badge-pill';
+        if (item.isDuplicate && item.colorIndex !== null) {
+          codeChip.classList.add(`tag-cluster-${item.colorIndex}`);
+        } else {
+          codeChip.style.background = 'var(--bg-subtle)';
+          codeChip.style.border = '1px solid var(--border-subtle)';
+        }
+        codeChip.textContent = item.code;
+        tdCode.appendChild(codeChip);
+        tr.appendChild(tdCode);
+
+        // Status & Badge
+        const tdStatus = document.createElement('td');
+        if (item.isUnique) {
+          const b = document.createElement('span');
+          b.className = 'status-badge status-badge-unique';
+          b.textContent = '✓ Unikal';
+          tdStatus.appendChild(b);
+        } else if (item.isFirstCopy) {
+          const b = document.createElement('span');
+          b.className = 'status-badge status-badge-first';
+          b.title = "Kiritilgan eng birinchi nusxa — tozalashda saqlab qolinadi";
+          b.innerHTML = `★ Asl nusxa <span style="font-size: 0.72rem; opacity: 0.85;">(1/${item.groupSize})</span>`;
+          tdStatus.appendChild(b);
+        } else {
+          const b = document.createElement('span');
+          b.className = 'status-badge status-badge-dupe';
+          b.title = "Keyingi takrorlangan nusxa — tozalashda o'chiriladi";
+          b.innerHTML = `⚠ Dublikat <span style="font-size: 0.72rem; opacity: 0.85;">(×${item.groupSize})</span>`;
+          tdStatus.appendChild(b);
+        }
+        tr.appendChild(tdStatus);
+
+        // Cluster info
+        const tdCluster = document.createElement('td');
+        if (item.isDuplicate && item.groupId !== null) {
+          const cBadge = document.createElement('span');
+          cBadge.className = `status-badge tag-cluster-${item.colorIndex}`;
+          cBadge.textContent = `Guruh #${item.groupId + 1} (${item.groupSize} ta)`;
+          tdCluster.appendChild(cBadge);
+        } else {
+          const nSpan = document.createElement('span');
+          nSpan.style.color = 'var(--text-subtle)';
+          nSpan.textContent = '—';
+          tdCluster.appendChild(nSpan);
+        }
+        tr.appendChild(tdCluster);
+
+        // Actions
+        const tdAction = document.createElement('td');
+        tdAction.style.textAlign = 'center';
+        const dBtn = document.createElement('button');
+        dBtn.className = 'row-del-btn';
+        dBtn.title = "Ushbu yozuvni o'chirish";
+        dBtn.setAttribute('aria-label', `${item.name} yozuvini o'chirish`);
+        dBtn.innerHTML = `
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="3 6 5 6 21 6"></polyline>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+          </svg>
+        `;
+        dBtn.addEventListener('click', () => deleteRow(item.id));
+        tdAction.appendChild(dBtn);
+        tr.appendChild(tdAction);
+
+        frag.appendChild(tr);
+      });
+
+      tbody.appendChild(frag);
+    }
+
+    // Input 1(a): Single Record Form with Live Inline Validation
+    function handleSingleSubmit(e) {
+      e.preventDefault();
+      const nameInput = document.getElementById('inputName');
+      const codeInput = document.getElementById('inputCode');
+      const errName = document.getElementById('errorName');
+      const errCode = document.getElementById('errorCode');
+
+      const nameVal = nameInput.value.trim();
+      const codeVal = codeInput.value.trim();
+
+      let hasErr = false;
+
+      if (!nameVal) {
+        nameInput.classList.add('is-error');
+        errName.classList.add('show');
+        hasErr = true;
+      } else {
+        nameInput.classList.remove('is-error');
+        errName.classList.remove('show');
+      }
+
+      if (!codeVal) {
+        codeInput.classList.add('is-error');
+        errCode.classList.add('show');
+        hasErr = true;
+      } else {
+        codeInput.classList.remove('is-error');
+        errCode.classList.remove('show');
+      }
+
+      if (hasErr) return;
+
+      pushUndo('Yakka yozuv qo\'shish');
+      recordsData.push({
+        id: `rec_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
+        name: nameVal,
+        code: codeVal
+      });
+
+      nameInput.value = '';
+      codeInput.value = '';
+      nameInput.focus();
+
+      renderTable();
+      triggerToast(`"${nameVal}" muvaffaqiyatli qo'shildi.`);
+    }
+
+    // Input 1(b): Bulk Input Parser with exact line-by-line feedback
+    function handleBulkImport() {
+      const textarea = document.getElementById('bulkTextarea');
+      const raw = textarea.value;
+      const alertBox = document.getElementById('bulkValidationAlert');
+      const alertList = document.getElementById('bulkAlertList');
+      const alertTitle = document.getElementById('bulkAlertTitle');
+
+      alertList.innerHTML = '';
+      alertBox.classList.remove('active');
+
+      if (!raw.trim()) {
+        alertTitle.textContent = "Matn maydoni bo'sh";
+        const li = document.createElement('li');
+        li.textContent = "Iltimos, import qilish uchun yozuvlarni kiriting.";
+        alertList.appendChild(li);
+        alertBox.classList.add('active');
+        return;
+      }
+
+      const lines = raw.split(/\r?\n/);
+      const validEntries = [];
+      const errors = [];
+
+      lines.forEach((lineStr, idx) => {
+        const lineNum = idx + 1;
+        const trimmed = lineStr.trim();
+        if (!trimmed) return; // ignore blank lines safely
+
+        let sep = null;
+        if (lineStr.includes('\t')) sep = '\t';
+        else if (lineStr.includes(';')) sep = ';';
+        else if (lineStr.includes(',')) sep = ',';
+
+        if (!sep) {
+          errors.push({ line: lineNum, reason: "Ajratkich topilmadi (vergul, nuqtali vergul yoki tab kutilgan)" });
+          return;
+        }
+
+        const pieces = lineStr.split(sep);
+        if (pieces.length < 2) {
+          errors.push({ line: lineNum, reason: "Nom va Kod ajratkich bilan ta'minlanishi shart" });
+          return;
+        }
+
+        const namePart = pieces[0].trim();
+        const codePart = pieces.slice(1).join(sep).trim();
+
+        if (!namePart && !codePart) {
+          errors.push({ line: lineNum, reason: "Ham Nom, ham Kod bo'sh qolgan" });
+        } else if (!namePart) {
+          errors.push({ line: lineNum, reason: "Nom bo'sh kiritilgan" });
+        } else if (!codePart) {
+          errors.push({ line: lineNum, reason: "Kod bo'sh kiritilgan" });
+        } else {
+          validEntries.push({
+            id: `rec_${Date.now()}_${idx}_${Math.random().toString(36).substr(2, 4)}`,
+            name: namePart,
+            code: codePart
+          });
+        }
+      });
+
+      if (validEntries.length > 0) {
+        pushUndo(`${validEntries.length} ta yozuv import qilindi`);
+        recordsData = recordsData.concat(validEntries);
+        textarea.value = '';
+        renderTable();
+      }
+
+      if (errors.length > 0) {
+        alertTitle.textContent = `${validEntries.length} ta yaroqli yozuv import qilindi. ${errors.length} ta noto'g'ri qator e'tibordan chetda qoldi:`;
+        errors.forEach(err => {
+          const li = document.createElement('li');
+          li.innerHTML = `<strong>Qator ${err.line}:</strong> ${err.reason}`;
+          alertList.appendChild(li);
+        });
+        alertBox.classList.add('active');
+      } else if (validEntries.length > 0) {
+        triggerToast(`Barcha ${validEntries.length} ta yozuv to'liq qabul qilindi.`);
+      }
+    }
+
+    // Input 1(c): Load Sample Dataset
+    function loadSampleData() {
+      pushUndo('Namunaviy ma\'lumotlar yuklandi');
+      recordsData = LABORATORY_SAMPLES.map((item, idx) => ({
+        id: `sample_${Date.now()}_${idx}_${Math.random().toString(36).substr(2, 4)}`,
+        name: item.name,
+        code: item.code
+      }));
+      renderTable();
+      triggerToast(`${LABORATORY_SAMPLES.length} ta laboratoriya namunasi muvaffaqiyatli yuklandi.`);
+    }
+
+    function deleteRow(id) {
+      pushUndo('Yozuv o\'chirildi');
+      const target = recordsData.find(r => r.id === id);
+      recordsData = recordsData.filter(r => r.id !== id);
+      renderTable();
+      if (target) {
+        triggerToast(`"${target.name}" o'chirildi.`, true);
+      }
+    }
+
+    // Requirement 4: Clean duplicates preserving earliest entry
+    function executeCleanDuplicates() {
+      const analysis = detectDuplicates(recordsData);
+      if (analysis.redundantCount === 0) return;
+
+      pushUndo(`${analysis.redundantCount} ta dublikat tozalandi`);
+
+      const seen = new Set();
+      const cleaned = [];
+
+      for (let i = 0; i < recordsData.length; i++) {
+        const item = recordsData[i];
+        if (!seen.has(item.code)) {
+          seen.add(item.code);
+          cleaned.push(item);
+        }
+      }
+
+      const prunedCount = recordsData.length - cleaned.length;
+      recordsData = cleaned;
+      renderTable();
+      closeModal('cleanModal');
+
+      // Trigger Confetti physics celebratory burst
+      launchConfetti();
+      triggerToast(`${prunedCount} ta takroriy dublikat tozalandi (1-asl nusxalar qoldirildi).`, true);
+    }
+
+    function executeClearAll() {
+      if (recordsData.length === 0) return;
+      pushUndo('Hammasi tozalandi');
+      const count = recordsData.length;
+      recordsData = [];
+      renderTable();
+      closeModal('clearModal');
+      triggerToast(`Barcha ${count} ta yozuv o'chirildi.`, true);
+    }
+
+    // Undo Stack
+    function pushUndo(actionLabel) {
+      undoHistory.push({
+        label: actionLabel,
+        snapshot: JSON.parse(JSON.stringify(recordsData))
+      });
+      if (undoHistory.length > 30) undoHistory.shift();
+    }
+
+    function applyUndo() {
+      if (undoHistory.length === 0) return;
+      const last = undoHistory.pop();
+      recordsData = last.snapshot;
+      renderTable();
+      triggerToast(`Amal bekor qilindi: ${last.label}.`);
+    }
+
+    // Export to Excel-compatible CSV (with UTF-8 BOM)
+    function exportCsvFile() {
+      if (recordsData.length === 0) {
+        triggerToast("Eksport qilish uchun yozuv mavjud emas.");
+        return;
+      }
+      const analysis = detectDuplicates(recordsData);
+      const headers = ['#', 'Nomi', 'Kodi', 'Holati', 'Guruh O\'lchami'];
+      const rows = analysis.records.map(r => {
+        const st = r.isUnique ? 'Unikal' : (r.isFirstCopy ? 'Asl nusxa (1-chi)' : 'Dublikat');
+        const esc = s => `"${String(s).replace(/"/g, '""')}"`;
+        return [r.index, esc(r.name), esc(r.code), esc(st), r.groupSize].join(',');
+      });
+
+      const csvContent = '\uFEFF' + [headers.join(','), ...rows].join('\r\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `dublikatlar_hisoboti_${Date.now()}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      triggerToast("CSV hisoboti yuklab olindi.");
+    }
+
+    // Copy to clipboard fallback
+    function copyTableClipboard() {
+      if (recordsData.length === 0) {
+        triggerToast("Nusxalash uchun yozuv mavjud emas.");
+        return;
+      }
+      const analysis = detectDuplicates(recordsData);
+      const lines = [
+        '#\tNomi\tKodi\tHolati\tKlaster',
+        ...analysis.records.map(r => {
+          const st = r.isUnique ? 'Unikal' : (r.isFirstCopy ? 'Asl nusxa (1)' : 'Dublikat');
+          return `${r.index}\t${r.name}\t${r.code}\t${st}\t${r.groupSize}`;
+        })
+      ].join('\n');
+
+      const ta = document.createElement('textarea');
+      ta.value = lines;
+      ta.style.position = 'fixed';
+      ta.style.top = '-9999px';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      try {
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        triggerToast(`${analysis.totalCount} ta yozuv clipboardga nusxalandi.`);
+      } catch (e) {
+        document.body.removeChild(ta);
+        triggerToast("Nusxalashda xatolik yuz berdi.");
+      }
+    }
+
+    function triggerToast(text, showUndo = false) {
+      const deck = document.getElementById('toastDeck');
+      const toast = document.createElement('div');
+      toast.className = 'toast-card';
+      toast.setAttribute('role', 'status');
+
+      const span = document.createElement('span');
+      span.textContent = text;
+      toast.appendChild(span);
+
+      if (showUndo && undoHistory.length > 0) {
+        const uBtn = document.createElement('button');
+        uBtn.className = 'toast-undo-btn';
+        uBtn.textContent = 'Bekor Qilish';
+        uBtn.addEventListener('click', () => {
+          applyUndo();
+          toast.remove();
+        });
+        toast.appendChild(uBtn);
+      }
+
+      const pBar = document.createElement('div');
+      pBar.className = 'toast-progress-bar';
+      toast.appendChild(pBar);
+
+      deck.appendChild(toast);
+      requestAnimationFrame(() => toast.classList.add('show'));
+
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 250);
+      }, 5800);
+    }
+
+    function openModal(id) {
+      const m = document.getElementById(id);
+      if (m) m.classList.add('is-open');
+    }
+
+    function closeModal(id) {
+      const m = document.getElementById(id);
+      if (m) m.classList.remove('is-open');
+    }
+
+    /* Celebration Canvas Confetti */
+    function launchConfetti() {
+      const canvas = document.getElementById('confettiCanvas');
+      const ctx = canvas.getContext('2d');
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = window.innerWidth * dpr;
+      canvas.height = window.innerHeight * dpr;
+      ctx.scale(dpr, dpr);
+
+      const colors = ['#3b82f6', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6', '#06b6d4'];
+      const particles = [];
+      const total = 90;
+
+      for (let i = 0; i < total; i++) {
+        particles.push({
+          x: window.innerWidth / 2,
+          y: window.innerHeight * 0.45,
+          vx: (Math.random() - 0.5) * 16,
+          vy: (Math.random() - 0.75) * 15,
+          size: Math.random() * 8 + 4,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          rotation: Math.random() * 360,
+          rotSpd: (Math.random() - 0.5) * 10,
+          opacity: 1,
+          gravity: 0.35,
+          friction: 0.96
+        });
+      }
+
+      let animId;
+      function render() {
+        ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+        let active = false;
+
+        particles.forEach(p => {
+          p.vx *= p.friction;
+          p.vy *= p.friction;
+          p.vy += p.gravity;
+          p.x += p.vx;
+          p.y += p.vy;
+          p.rotation += p.rotSpd;
+          p.opacity -= 0.015;
+
+          if (p.opacity > 0) {
+            active = true;
+            ctx.save();
+            ctx.translate(p.x, p.y);
+            ctx.rotate((p.rotation * Math.PI) / 180);
+            ctx.fillStyle = p.color;
+            ctx.globalAlpha = Math.max(p.opacity, 0);
+            ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+            ctx.restore();
+          }
+        });
+
+        if (active) {
+          animId = requestAnimationFrame(render);
+        } else {
+          ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+          cancelAnimationFrame(animId);
+        }
+      }
+      render();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Theme Toggle with localStorage persistence
+      const themeBtn = document.getElementById('themeToggleBtn');
+      const sunIcon = document.getElementById('sunIcon');
+      const moonIcon = document.getElementById('moonIcon');
+
+      const saved = localStorage.getItem('dedupe_theme') || 'dark';
+
+      function setTheme(th) {
+        document.documentElement.setAttribute('data-theme', th);
+        localStorage.setItem('dedupe_theme', th);
+        if (th === 'dark') {
+          sunIcon.style.display = 'block';
+          moonIcon.style.display = 'none';
+        } else {
+          sunIcon.style.display = 'none';
+          moonIcon.style.display = 'block';
+        }
+      }
+      setTheme(saved);
+
+      themeBtn.addEventListener('click', () => {
+        const cur = document.documentElement.getAttribute('data-theme') || 'dark';
+        setTheme(cur === 'dark' ? 'light' : 'dark');
+      });
+
+      // 2. Mobile Responsive Tab Switcher for Input Methods
+      const tabSingle = document.getElementById('tabSwitchSingle');
+      const tabBulk = document.getElementById('tabSwitchBulk');
+      const panelSingle = document.getElementById('panelSingleRecord');
+      const panelBulk = document.getElementById('panelBulkRecord');
+
+      tabSingle.addEventListener('click', () => {
+        tabSingle.classList.add('active');
+        tabBulk.classList.remove('active');
+        panelSingle.style.display = 'flex';
+        panelBulk.style.display = 'none';
+      });
+
+      tabBulk.addEventListener('click', () => {
+        tabBulk.classList.add('active');
+        tabSingle.classList.remove('active');
+        panelSingle.style.display = 'none';
+        panelBulk.style.display = 'flex';
+      });
+
+      function handleResize() {
+        if (window.innerWidth >= 960) {
+          panelSingle.style.display = 'flex';
+          panelBulk.style.display = 'flex';
+        } else {
+          if (tabSingle.classList.contains('active')) {
+            panelSingle.style.display = 'flex';
+            panelBulk.style.display = 'none';
+          } else {
+            panelSingle.style.display = 'none';
+            panelBulk.style.display = 'flex';
+          }
+        }
+      }
+      window.addEventListener('resize', handleResize);
+      handleResize();
+
+      // 3. Form Listeners
+      document.getElementById('singleForm').addEventListener('submit', handleSingleSubmit);
+      document.getElementById('bulkImportBtn').addEventListener('click', handleBulkImport);
+      document.getElementById('bulkClearBtn').addEventListener('click', () => {
+        document.getElementById('bulkTextarea').value = '';
+        document.getElementById('bulkValidationAlert').classList.remove('active');
+      });
+
+      // 4. Sample Data
+      document.getElementById('loadSampleBtn').addEventListener('click', loadSampleData);
+      document.getElementById('emptyStateSampleBtn').addEventListener('click', loadSampleData);
+
+      // 5. Clean Modal Trigger
+      document.getElementById('cleanDuplicatesBtn').addEventListener('click', () => {
+        const analysis = detectDuplicates(recordsData);
+        if (analysis.redundantCount === 0) return;
+
+        document.getElementById('modalPruneCount').textContent = analysis.redundantCount;
+        document.getElementById('modalRetainCount').textContent = analysis.uniqueCodesCount;
+
+        const container = document.getElementById('modalAffectedCodes');
+        container.innerHTML = '';
+        analysis.duplicateCodesList.forEach(item => {
+          const chip = document.createElement('span');
+          chip.className = 'code-pill';
+          chip.style.margin = '2px';
+          chip.textContent = `${item.code} (×${item.count})`;
+          container.appendChild(chip);
+        });
+
+        openModal('cleanModal');
+      });
+
+      document.getElementById('cancelCleanBtn').addEventListener('click', () => closeModal('cleanModal'));
+      document.getElementById('confirmCleanBtn').addEventListener('click', executeCleanDuplicates);
+
+      // 6. Clear All Modal Trigger
+      document.getElementById('clearAllBtn').addEventListener('click', () => {
+        if (recordsData.length === 0) return;
+        document.getElementById('modalClearCount').textContent = recordsData.length;
+        openModal('clearModal');
+      });
+
+      document.getElementById('cancelClearBtn').addEventListener('click', () => closeModal('clearModal'));
+      document.getElementById('confirmClearBtn').addEventListener('click', executeClearAll);
+
+      // 7. Export and Copy Actions
+      document.getElementById('exportCsvBtn').addEventListener('click', exportCsvFile);
+      document.getElementById('copyClipboardBtn').addEventListener('click', copyTableClipboard);
+
+      // 8. Filter Tabs Navigation
+      const filterButtons = document.querySelectorAll('.filter-tab-btn');
+      filterButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          filterButtons.forEach(b => {
+            b.classList.remove('active');
+            b.setAttribute('aria-selected', 'false');
+          });
+          btn.classList.add('active');
+          btn.setAttribute('aria-selected', 'true');
+          currentFilter = btn.getAttribute('data-filter');
+          renderTable();
+        });
+      });
+
+      // 9. Instant Search Filter
+      const searchInput = document.getElementById('filterSearchInput');
+      const searchClear = document.getElementById('searchClearBtn');
+
+      searchInput.addEventListener('input', (e) => {
+        searchQuery = e.target.value;
+        if (searchQuery.length > 0) {
+          searchClear.classList.add('active');
+        } else {
+          searchClear.classList.remove('active');
+        }
+        renderTable();
+      });
+
+      searchClear.addEventListener('click', () => {
+        searchInput.value = '';
+        searchQuery = '';
+        searchClear.classList.remove('active');
+        searchInput.focus();
+        renderTable();
+      });
+
+      // 10. Close Modals on Backdrop Click or ESC Key
+      window.addEventListener('click', (e) => {
+        if (e.target.classList.contains('modal-backdrop')) {
+          closeModal('cleanModal');
+          closeModal('clearModal');
+        }
+      });
+
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          closeModal('cleanModal');
+          closeModal('clearModal');
+        }
+      });
+
+      // Load initial biomedical laboratory samples
+      loadSampleData();
+    });
+  </script>
+</body>
+</html>
